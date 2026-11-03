@@ -1,0 +1,12 @@
+{
+  "type": "recipe",
+  "crafter": "mechanic_crafting",
+  "inputs": [
+    { "id": "create:polished_rose_quartz" },
+    { "id": "create:iron_sheet" }
+  ],
+  "intermediate": "minecraft:air",
+  "min-building-level": 2,
+  "result": { "id": "create:electron_tube" },
+  "show-tooltip": true
+}

@@ -1,0 +1,16 @@
+{
+  "lostcenturies.preset.easy": "Easy",
+  "lostcenturies.preset.normal": "Normal",
+  "lostcenturies.preset.hard": "Hard",
+  "lostcenturies.preset.current": "Survival preset: %s",
+  "lostcenturies.preset.set": "Survival preset set to %s",
+  "lostcenturies.preset.unknown": "Unknown preset. Use easy, normal or hard.",
+
+  "lostcenturies.colony_water.out.normal": "%1$s has run out of drinking water! Citizens are exhausted and slowed. Store water (purity %2$s or better) in the warehouse or town hall.",
+  "lostcenturies.colony_water.out.hard": "%1$s has run out of drinking water! Workers have stopped working. Store water (purity %2$s or better) in the warehouse or town hall.",
+  "lostcenturies.colony_water.restored": "%s has drinking water again.",
+  "lostcenturies.colony_water.status": "%1$s: %2$s citizens, reserve %3$s units, drinks %4$s/day, %5$s",
+  "lostcenturies.colony_water.state.ok": "supplied",
+  "lostcenturies.colony_water.state.dry": "OUT OF WATER",
+  "lostcenturies.colony_water.none": "No colonies yet."
+}

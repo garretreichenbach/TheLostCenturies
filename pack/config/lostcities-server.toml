@@ -1,0 +1,6 @@
+# NeoForge 21.1 keeps server configs in config/ (not per world). Shipped here so pack syncs overwrite it.
+# Makes new worlds use The Lost Centuries profile without touching the Lost Cities button
+# on the world creation screen (picking a profile there still overrides this).
+[profiles]
+	selectedProfile = "lostcenturies"
+	selectedCustomJson = ""

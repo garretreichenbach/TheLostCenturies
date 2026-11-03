@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.thelostcenturies.core.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "minecolonies.AbstractEntityAIInteractMixin",
+    "minecraft.RandomStateAccessor",
+    "thirst.PlayerThirstMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

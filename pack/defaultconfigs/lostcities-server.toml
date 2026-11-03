@@ -1,0 +1,6 @@
+# Copied into each new world's serverconfig/ on creation.
+# Makes new worlds use The Lost Centuries profile without touching the Lost Cities button
+# on the world creation screen (picking a profile there still overrides this).
+[profiles]
+	selectedProfile = "lostcenturies"
+	selectedCustomJson = ""

@@ -1,0 +1,35 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.iml
+
+# Packwiz exports
+*.mrpack
+*.zip
+
+# Local test instances / servers
+/run/
+/testsrv/
+/instance/
+
+# Never commit mod jars; packwiz pins them by hash in pack/mods/*.pw.toml
+*.jar
+!mod/gradle/wrapper/gradle-wrapper.jar
+
+# KubeJS / ProbeJS generated output
+pack/kubejs/probe/
+pack/kubejs/exported/
+pack/local/
+
+# Companion mod build output
+mod/build/
+mod/.gradle/
+mod/run/
+mod/runs/
+mod/repo/
+mod/out/
+
+# Pelican secrets
+server/pelican/.env

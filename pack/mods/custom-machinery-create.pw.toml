@@ -1,0 +1,13 @@
+name = "Custom Machinery Create"
+filename = "CustomMachineryCreate-1.21.1-1.2.7.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/NHh2cWu8/versions/MnNuPMTK/CustomMachineryCreate-1.21.1-1.2.7.jar"
+hash-format = "sha512"
+hash = "0d7a63ead1f29d1d9614de88690baa0d28d129afa9bfb98367e969b521a7c492f79c4fbee95c8ef53d15e73762b26fe1e10f24dc7a0537cf64daa33e926a2068"
+
+[update]
+[update.modrinth]
+mod-id = "NHh2cWu8"
+version = "MnNuPMTK"

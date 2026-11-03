@@ -1,0 +1,14 @@
+{
+  "name": "Lost Centuries",
+  "icon": "icon.png",
+  "authors": [
+    "VideoGoose"
+  ],
+  "desc": "Reclaimed ruins of the old cities. Each level of a building is another stage of its restoration.",
+  "mods": [
+    "structurize",
+    "minecolonies"
+  ],
+  "version": "1",
+  "pack-format": "1"
+}

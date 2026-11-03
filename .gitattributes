@@ -1,2 +1,11 @@
-# Auto detect text files and perform LF normalization
-* text=auto
+# Force LF everywhere: packwiz hashes every file in pack/, so CRLF
+# conversion on a Windows checkout would break the index hashes.
+* text=auto eol=lf
+
+# Binary assets
+*.png      binary
+*.jpg      binary
+*.ogg      binary
+*.nbt      binary
+*.blueprint binary
+*.jar      binary

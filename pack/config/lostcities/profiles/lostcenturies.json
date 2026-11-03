@@ -1,0 +1,26 @@
+{
+  "public": true,
+  "lostcity": {
+    "description": "The Lost Centuries: one ruined city at spawn in a wasteland",
+    "extraDescription": "Single predefined city (lostcenturies:spawn_city), no random cities. Player spawns inside a building.",
+    "worldStyle": "standard",
+
+    "vineChance": 0.003,
+    "randomLeafBlockChance": 0.01,
+    "rubbleLayer": true,
+    "rubbleDirtScale": 2.0,
+    "rubbleLeaveScale": 0.0,
+    "ruinChance": 0.5,
+    "ruinMinlevelPercent": 0.5,
+    "ruinMaxlevelPercent": 0.9,
+    "avoidWater": true,
+    "avoidFoliage": true,
+
+    "spawnCity": "lostcenturies:spawn_city",
+    "forceSpawnInBuilding": true
+  },
+  "cities": {
+    "cityChance": 0.0,
+    "cityMaxRadius": 192
+  }
+}

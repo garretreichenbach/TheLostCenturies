@@ -1,0 +1,38 @@
+# Pelican Panel for the SOE box, reachable only over Tailscale.
+# Based on https://pelican.dev/docs/panel/advanced/docker (BEHIND_PROXY variant):
+# the bundled Caddy serves plain HTTP on :80 inside the container and skips Let's Encrypt.
+# Traffic is still encrypted end to end by Tailscale (WireGuard).
+#
+#   cp .env.example .env   # fill in TS_IP etc.
+#   docker compose up -d
+services:
+  panel:
+    image: ghcr.io/pelican/panel:latest
+    restart: always
+    networks:
+      - default
+    ports:
+      # Bound to the Tailscale IP only: not reachable from the public internet.
+      - "${TS_IP:?set TS_IP in .env}:${PANEL_PORT:-8090}:80"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - pelican-data:/pelican-data
+      - pelican-logs:/var/www/html/storage/logs
+    environment:
+      XDG_DATA_HOME: /pelican-data
+      APP_URL: "http://${PANEL_HOST:?set PANEL_HOST in .env}:${PANEL_PORT:-8090}"
+      BEHIND_PROXY: "true"
+      TRUSTED_PROXIES: "127.0.0.1,172.17.0.1,${PANEL_GATEWAY:-172.20.0.1}"
+      ADMIN_EMAIL: "${ADMIN_EMAIL:?set ADMIN_EMAIL in .env}"
+
+volumes:
+  pelican-data:
+  pelican-logs:
+
+networks:
+  default:
+    ipam:
+      config:
+        # Must not overlap SOE's Docker networks or Wings' network (preflight.sh lists them).
+        - subnet: ${PANEL_SUBNET:-172.20.0.0/16}
