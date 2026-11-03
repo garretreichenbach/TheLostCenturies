@@ -110,8 +110,8 @@ MC 1.21.1 / NeoForge 21.1.265 and Java 21, with two extra variables:
 Startup command: `packwiz-installer-bootstrap.jar -g -s server "$PACK_URL"`, then the normal NeoForge start.
 A failed sync (e.g. GitHub down) logs a warning and starts with the existing files.
 
-**`PACK_URL` needs the repo on GitHub.** The repo currently has no remote.
-- **Public repo (simplest):** `https://raw.githubusercontent.com/<user>/TheLostCenturies/main/pack/pack.toml`
+**`PACK_URL` must be reachable without auth.**
+- **Public repo (current):** `https://raw.githubusercontent.com/garretreichenbach/TheLostCenturies/main/pack/pack.toml` (the egg's default)
 - **Private repo:** packwiz-installer can't send auth headers. You'd need to publish just the `pack/` folder
   somewhere public (GitHub Pages from a separate repo, or the box's existing web server).
 

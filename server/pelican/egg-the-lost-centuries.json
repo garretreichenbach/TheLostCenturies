@@ -1,7 +1,7 @@
 {
     "meta": {
         "version": "PLCN_v3",
-        "update_url": null
+        "update_url": "https://raw.githubusercontent.com/garretreichenbach/TheLostCenturies/main/server/pelican/egg-the-lost-centuries.json"
     },
     "exported_at": "2026-11-03T23:42:09+00:00",
     "name": "The Lost Centuries (NeoForge + packwiz)",
@@ -70,7 +70,7 @@
             "name": "Pack URL",
             "description": "URL of the packwiz pack.toml (e.g. https://raw.githubusercontent.com/<user>/TheLostCenturies/main/pack/pack.toml). Must be reachable without auth.",
             "env_variable": "PACK_URL",
-            "default_value": "",
+            "default_value": "https://raw.githubusercontent.com/garretreichenbach/TheLostCenturies/main/pack/pack.toml",
             "user_viewable": true,
             "user_editable": true,
             "rules": [
