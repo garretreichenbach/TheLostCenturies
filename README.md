@@ -60,9 +60,34 @@ packwiz refresh                     # rebuild index.toml after editing scripts/c
    `"$INST_JAVA" -jar packwiz-installer-bootstrap.jar http://localhost:8080/pack.toml`
 3. Launch. The instance pulls the current pack state on every start.
 
-### Exporting
+### Releasing
+
+Two tag-driven GitHub Actions workflows:
+
+| Tag | Workflow | Result |
+|---|---|---|
+| `mod-vX.Y.Z` | `mod-release.yml` | builds the companion mod, GitHub release with the jar, updates `pack/mods/lostcenturies.pw.toml` on `main` (see `mod/README.md`) |
+| `pack-vX.Y.Z` | `pack-release.yml` | GitHub release with a **Prism instance zip** + changelog of mod changes since the last pack tag |
+
+Pack release:
 
 ```sh
-packwiz cf export     # CurseForge zip
-packwiz mr export     # Modrinth .mrpack (CurseForge-only mods must allow 3rd-party downloads)
+# 1. bump version = "X.Y.Z" in pack/pack.toml
+cd pack && packwiz refresh && cd ..
+git commit -am "pack X.Y.Z" && git push
+git tag pack-vX.Y.Z && git push origin pack-vX.Y.Z
 ```
+
+The workflow fails if the tag doesn't match `pack.toml`'s version or if `index.toml` is stale.
+
+The instance zip contains no mod jars, because some mods (e.g. FTB's) don't allow redistribution. It's a Prism
+instance whose pre-launch command runs packwiz-installer against `pack.toml` **at that tag**, so each
+release is reproducible and every mod is downloaded from its original source. (`packwiz mr export` would
+bundle the CurseForge-only jars into the `.mrpack`, so we don't publish that.)
+
+To track `main` instead (dev/testing), change the pre-launch URL in the instance to `.../main/pack/pack.toml`.
+
+### Exporting to platforms (later)
+
+`packwiz cf export` / `packwiz mr export` produce CurseForge / Modrinth packs, but each bundles the other
+platform's jars, so publishing on CurseForge or Modrinth means sourcing every mod from that platform first.
