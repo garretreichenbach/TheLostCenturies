@@ -73,6 +73,22 @@ players get a message when water runs out and when it's restored.
 | `minPurity` | `2` | 0 dirty, 1 slightly dirty, 2 acceptable, 3 purified |
 | `startingReserveDays` | `3.0` | grace period for new colonies |
 
+### Teams: one colony per FTB party
+Members of an FTB Teams **party** are added to the colony owned by any member of that party, and removed
+when they leave it. Triggered when someone joins or leaves a party, on login, and when a colony is founded
+(so a party formed before founding is picked up). Players are told in chat.
+
+- Never demotes: the owner and existing officers keep their rank.
+- On leaving, a player is only removed if their rank is still the auto-assigned one (so manual promotions stick).
+
+| Key (`teams.`) | Default | |
+|---|---|---|
+| `autoJoinColony` | `true` | |
+| `rank` | `OFFICER` | `OFFICER` (build/manage) or `FRIEND` |
+
+How players use it: the founder creates a party (`/ftbteams party create <name>`) and invites the others
+(`/ftbteams party invite <player>`). FTB Quests progress is shared per team too.
+
 ## Building
 
 Requires JDK 21.

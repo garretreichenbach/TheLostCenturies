@@ -1,0 +1,6 @@
+# Thirst Was Taken common config: only the keys The Lost Centuries changes. NeoForge fills in the rest.
+
+["Purity-related Effects"]
+	# Water without a purity value (e.g. from Ex Deorum crucibles/barrels, loot) counts as dirty (0),
+	# so purification still matters. Water collected from the world keeps Thirst Was Taken's normal purity.
+	defaultPurity = 0

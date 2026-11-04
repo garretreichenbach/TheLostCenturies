@@ -36,6 +36,7 @@ docs/                     design notes
 | Maps | Xaero's Minimap, Xaero's World Map | Modrinth |
 | QoL | Jade (+ Jade Addons), Mouse Tweaks, AppleSkin, Controlling, Clumps, Inventory Essentials | Modrinth |
 | Building | Effortless Building | Modrinth |
+| Early game / danger | Ex Deorum (sieves limited), Lost Souls (haunted buildings) | Modrinth |
 
 ## Working on the pack
 

@@ -146,6 +146,13 @@ dependencies {
     localRuntime "curse.maven:multi-piston-303278:${multipiston_file}"
     localRuntime "curse.maven:towntalk-900364:${towntalk_file}"
 
+    // FTB Teams (+ Architectury for its events)
+    compileOnly "curse.maven:ftb-teams-forge-404468:${ftbteams_file}"
+    compileOnly "curse.maven:architectury-api-419699:${architectury_file}"
+    localRuntime "curse.maven:ftb-teams-forge-404468:${ftbteams_file}"
+    localRuntime "curse.maven:ftb-library-forge-404465:${ftblibrary_file}"
+    localRuntime "curse.maven:architectury-api-419699:${architectury_file}"
+
     // Thirst Was Taken
     compileOnly "maven.modrinth:thirst-was-taken:${thirst_version}"
     localRuntime "maven.modrinth:thirst-was-taken:${thirst_version}"

@@ -138,7 +138,11 @@ op <you>          (and the friend, if they should use creative / build tools)
 lostcenturies preset easy
 ```
 
-Plus `gamemode creative <player>` while building. Back up before experimenting:
+Plus `gamemode creative <player>` while building.
+
+**Lost Souls** (haunted buildings) is in the pack. On the build server, turn it off so mobs don't spawn while you
+build: in the server's `config/lostsouls-server.toml` set `hauntedChance = 0.0` (section `[general]`), then
+restart. The pack doesn't ship that file, so the change survives pack syncs. Back up before experimenting:
 Pelican **Backups** (stored in `/var/lib/pelican/backups`) and a daily **Schedule** with a backup task.
 
 ## 7. Your friend's client

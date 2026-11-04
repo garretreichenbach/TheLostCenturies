@@ -96,6 +96,19 @@ public final class Config {
             .comment("Minimum Thirst Was Taken purity colonists accept: 0 dirty, 1 slightly dirty, 2 acceptable, 3 purified.")
             .defineInRange("minPurity", 2, 0, 3);
 
+    static {
+        BUILDER.pop().comment(
+                "Teams: one colony per FTB Teams party. Party members are added to the colony owned by a member",
+                "of the party and removed when they leave it.").push("teams");
+    }
+
+    public static final ModConfigSpec.BooleanValue TEAMS_AUTO_JOIN = BUILDER
+            .define("autoJoinColony", true);
+
+    public static final ModConfigSpec.EnumValue<com.thelostcenturies.core.teams.TeamColonySync.AutoRank> TEAMS_RANK = BUILDER
+            .comment("Colony rank given to party members: OFFICER (can build and manage) or FRIEND.")
+            .defineEnum("rank", com.thelostcenturies.core.teams.TeamColonySync.AutoRank.OFFICER);
+
     public static final ModConfigSpec SPEC = BUILDER.pop().build();
 
     private Config() {}

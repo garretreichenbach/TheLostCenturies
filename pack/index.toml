@@ -17,6 +17,10 @@ file = "config/lostcities/profiles/lostcenturies.json"
 hash = "9ddf208b698c112d575eae59aa00c1319e027cd59b4dee1c4226822b65950498"
 
 [[files]]
+file = "config/thirst/common.toml"
+hash = "2139a148cee3e20fead309e3add2aaf2199b1d5b3733ee8d34561cca90c721d5"
+
+[[files]]
 file = "defaultconfigs/lostcities-server.toml"
 hash = "61a3d2b26a2584143581bb22b5603d8e27445fe46e71925f624e69f1930f0e54"
 
@@ -31,6 +35,14 @@ hash = "7739a46e682525c61e5d272879efccafeb32916196e8c45f0d0eae8680d38658"
 [[files]]
 file = "kubejs/server_scripts/colony_gates.js"
 hash = "6d873a6ede7e57673b60ad6fcea725b1afd45275d56d13cf0963d99cb2dafaae"
+
+[[files]]
+file = "kubejs/server_scripts/exdeorum_limits.js"
+hash = "26a14b7d90e3036478cd5ab5fca233bc902c5f5aad2828c5cf33555a2526c420"
+
+[[files]]
+file = "kubejs/server_scripts/founding.js"
+hash = "924d0bca6e217d46984d489b750bb57ff643a20c3d73c1c1efcf87a025740fc9"
 
 [[files]]
 file = "mods/appleskin.pw.toml"
@@ -128,6 +140,11 @@ hash = "426238488c9ffd843f661f8bc74aa8e585fa6b4d342c43c4ba4cb8451298b725"
 metafile = true
 
 [[files]]
+file = "mods/ex-deorum.pw.toml"
+hash = "1c26e78328eb345bac9416b06b3283cd3c72729351efdd77349dd6c509e69a50"
+metafile = true
+
+[[files]]
 file = "mods/ferrite-core.pw.toml"
 hash = "73360e397134d238ee8fd21d33fd7f9275e9441f74f8f1b6ed92278877c0b9f1"
 metafile = true
@@ -200,6 +217,11 @@ metafile = true
 [[files]]
 file = "mods/lootr.pw.toml"
 hash = "0d3683a8c533e1fb67bf0b1668089a322fc5f594f9610d441657378ab4f64383"
+metafile = true
+
+[[files]]
+file = "mods/lost-souls.pw.toml"
+hash = "8f9950a6a7771396c4bdb93e44783bae7132bce590bbfc5250097c19936cb3b2"
 metafile = true
 
 [[files]]

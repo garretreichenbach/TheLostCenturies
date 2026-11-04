@@ -1,5 +1,7 @@
 # Design: The Lost Centuries
 
+See also: [PROGRESSION.md](PROGRESSION.md) (tiers, milestones, unlock order).
+
 ## Premise
 
 Some catastrophe ended the old world. The player wakes up inside a ruined city (The Lost Cities worldgen)

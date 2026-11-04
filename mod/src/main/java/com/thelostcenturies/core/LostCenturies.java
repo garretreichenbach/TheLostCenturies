@@ -8,6 +8,7 @@ import net.neoforged.neoforge.common.NeoForge;
 import com.thelostcenturies.core.command.LostCenturiesCommand;
 import com.thelostcenturies.core.survival.ColonyWater;
 import com.thelostcenturies.core.survival.SurvivalPresets;
+import com.thelostcenturies.core.teams.TeamColonySync;
 import com.thelostcenturies.core.worldgen.DryZone;
 
 /**
@@ -27,5 +28,7 @@ public final class LostCenturies {
         NeoForge.EVENT_BUS.addListener(SurvivalPresets::onPlayerTick);
         NeoForge.EVENT_BUS.addListener(ColonyWater::onServerTick);
         NeoForge.EVENT_BUS.addListener(LostCenturiesCommand::register);
+        TeamColonySync.init();
+        modBus.addListener(TeamColonySync::onCommonSetup);
     }
 }
