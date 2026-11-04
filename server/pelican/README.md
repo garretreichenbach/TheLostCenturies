@@ -125,7 +125,7 @@ Install, accept the EULA, start. The first start downloads the server-side mods 
 Iris and the maps are skipped), generates the Lost Cities world, and should log
 `Dry zone applied to the overworld`.
 
-**Companion mod:** once released (`git tag mod-vX.Y.Z && git push origin mod-vX.Y.Z`, see `mod/README.md`),
+**Companion mod:** once released (Actions → Companion mod release, see `mod/README.md`),
 it's part of the pack (server side only) and syncs like every other mod. Before the first release, upload
 `lostcenturies-*.jar` to `mods/` by hand. After that, delete the hand-uploaded copy so there aren't two.
 

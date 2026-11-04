@@ -126,16 +126,14 @@ If the instance syncs the pack via packwiz-installer from `http://localhost:8080
 
 ## Releasing
 
-Tag-driven, via `.github/workflows/mod-release.yml`:
+Run by hand: GitHub **Actions → Companion mod release → Run workflow**, enter the version (e.g. `0.2.0`), and
+leave "Point the pack at this release" checked. Or: `gh workflow run mod-release.yml -f version=0.2.0`.
 
-```sh
-git tag mod-v0.1.1 && git push origin mod-v0.1.1
-```
-
-GitHub Actions then:
-1. builds the jar with version `0.1.1` (the tag overrides `mod_version` in `gradle.properties`),
-2. publishes a GitHub release with `lostcenturies-0.1.1.jar`,
-3. rewrites `pack/mods/lostcenturies.pw.toml` to that release (URL + sha256), runs `packwiz refresh` and pushes to `main`.
+The workflow (`.github/workflows/mod-release.yml`):
+1. builds the jar with that version (overrides `mod_version` in `gradle.properties`),
+2. creates tag `mod-v0.2.0` and a GitHub release with `lostcenturies-0.2.0.jar`,
+3. if checked, rewrites `pack/mods/lostcenturies.pw.toml` to that release (URL + sha256), runs `packwiz refresh`
+   and pushes to `main`.
 
 The Pelican server picks it up on its next restart. Pull `main` afterwards, since the bot made a commit.
 

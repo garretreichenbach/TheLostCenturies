@@ -64,23 +64,19 @@ packwiz refresh                     # rebuild index.toml after editing scripts/c
 
 ### Releasing
 
-Two tag-driven GitHub Actions workflows:
+Both releases are run by hand from GitHub: **Actions → pick the workflow → Run workflow → type the version**.
+Nothing deploys on its own.
 
-| Tag | Workflow | Result |
+| Workflow | Input | Does |
 |---|---|---|
-| `mod-vX.Y.Z` | `mod-release.yml` | builds the companion mod, GitHub release with the jar, updates `pack/mods/lostcenturies.pw.toml` on `main` (see `mod/README.md`) |
-| `pack-vX.Y.Z` | `pack-release.yml` | GitHub release with a **Prism instance zip** + changelog of mod changes since the last pack tag |
+| **Companion mod release** (`mod-release.yml`) | version, e.g. `0.2.0`; "update pack" checkbox | builds the mod, tag `mod-v0.2.0` + GitHub release with the jar, and (if checked) points `pack/mods/lostcenturies.pw.toml` at it on `main` |
+| **Pack release** (`pack-release.yml`) | version, e.g. `0.2.0` | sets `version` in `pack/pack.toml`, runs `packwiz refresh`, commits to `main`, tag `pack-v0.2.0` + GitHub release with a **Prism instance zip** and a changelog of mod changes since the last pack release |
 
-Pack release:
+From a terminal instead: `gh workflow run mod-release.yml -f version=0.2.0` /
+`gh workflow run pack-release.yml -f version=0.2.0`.
 
-```sh
-# 1. bump version = "X.Y.Z" in pack/pack.toml
-cd pack && packwiz refresh && cd ..
-git commit -am "pack X.Y.Z" && git push
-git tag pack-vX.Y.Z && git push origin pack-vX.Y.Z
-```
-
-The workflow fails if the tag doesn't match `pack.toml`'s version or if `index.toml` is stale.
+Typical order when both changed: mod release first (it updates the pack entry), then pack release.
+Both commit to `main`, so `git pull` afterwards. They fail if the version's tag already exists.
 
 The instance zip contains no mod jars, because some mods (e.g. FTB's) don't allow redistribution. It's a Prism
 instance whose pre-launch command runs packwiz-installer against `pack.toml` **on `main`**, the same URL the

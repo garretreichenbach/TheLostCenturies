@@ -1,24 +1,46 @@
-# Pack release: bump `version` in pack/pack.toml, `packwiz refresh`, commit, then push a tag like `pack-v0.2.0`.
-# Publishes a GitHub release with a Prism Launcher instance zip (no mod jars; packwiz-installer installs the pack
-# from `main` before every launch, same as the server) and release notes listing mod changes since the last pack tag.
+# Pack release, run by hand: Actions → "Pack release" → Run workflow → version (e.g. 0.2.0).
+#   1. sets version in pack/pack.toml, runs packwiz refresh, commits "pack <version>" to main
+#   2. creates tag pack-v<version> on that commit + a GitHub release with a Prism Launcher instance zip
+#      (no mod jars; packwiz-installer installs the pack from `main` before every launch, same as the server)
+#      and release notes listing mod changes since the last pack tag.
 name: Pack release
 
 on:
-  push:
-    tags: ['pack-v*']
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Pack version (e.g. 0.2.0), becomes tag pack-v<version>'
+        required: true
+        type: string
 
 permissions:
   contents: write
 
+concurrency:
+  group: writes-to-main
+  cancel-in-progress: false
+
 jobs:
   release:
     runs-on: ubuntu-latest
+    env:
+      VERSION: ${{ inputs.version }}
+      TAG: pack-v${{ inputs.version }}
     steps:
-      - name: Checkout tag (with history and tags, for the changelog)
+      - name: Checkout (with history and tags, for the changelog)
         uses: actions/checkout@v7
         with:
           fetch-depth: 0
           fetch-tags: true
+
+      - name: Validate version
+        run: |
+          if ! [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+([-+][0-9A-Za-z.-]+)?$ ]]; then
+            echo "::error::Version '$VERSION' must look like 1.2.3"; exit 1
+          fi
+          if git rev-parse -q --verify "refs/tags/$TAG" >/dev/null; then
+            echo "::error::Tag $TAG already exists. Pick a new version."; exit 1
+          fi
 
       - name: Setup Go (for packwiz)
         uses: actions/setup-go@v7
@@ -26,24 +48,24 @@ jobs:
           go-version: stable
           cache: false
 
-      - name: Install packwiz
-        run: go install github.com/packwiz/packwiz@latest
-
-      - name: Check the pack index is up to date
-        working-directory: pack
+      - name: Bump version, refresh index, commit
         run: |
-          "$(go env GOPATH)/bin/packwiz" refresh
-          if ! git diff --quiet -- .; then
-            git --no-pager diff --stat -- .
-            echo "::error::pack/index.toml is stale. Run 'packwiz refresh' in pack/, commit, and re-tag."
-            exit 1
-          fi
+          go install github.com/packwiz/packwiz@latest
+          sed -i "s/^version = \".*\"/version = \"${VERSION}\"/" pack/pack.toml
+          (cd pack && "$(go env GOPATH)/bin/packwiz" refresh)
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add pack
+          git commit -m "pack ${VERSION}"
+          git pull --rebase origin "$GITHUB_REF_NAME"
+          git push origin "HEAD:$GITHUB_REF_NAME"
+          echo "RELEASE_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
 
       - name: Find previous pack release
-        id: prev
         run: |
-          PREV=$(git describe --tags --abbrev=0 --match 'pack-v*' "${GITHUB_REF_NAME}^" 2>/dev/null || true)
-          echo "tag=$PREV" >> "$GITHUB_OUTPUT"
+          PREV=$(git describe --tags --abbrev=0 --match 'pack-v*' HEAD 2>/dev/null || true)
+          echo "PREV_TAG=$PREV" >> "$GITHUB_ENV"
           echo "Previous pack tag: ${PREV:-none}"
 
       - name: Build instance zip and notes
@@ -51,18 +73,17 @@ jobs:
           curl -sSfL -o packwiz-installer-bootstrap.jar \
             https://github.com/packwiz/packwiz-installer-bootstrap/releases/latest/download/packwiz-installer-bootstrap.jar
           python3 tools/pack_release.py \
-            --tag "$GITHUB_REF_NAME" \
+            --tag "$TAG" \
             --repo "$GITHUB_REPOSITORY" \
             --bootstrap packwiz-installer-bootstrap.jar \
-            --prev-tag "${{ steps.prev.outputs.tag }}" \
+            --prev-tag "$PREV_TAG" \
             --out dist
 
-      - name: Create GitHub release
+      - name: Create tag and GitHub release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          VERSION="${GITHUB_REF_NAME#pack-v}"
-          gh release create "$GITHUB_REF_NAME" dist/*.zip \
-            --verify-tag \
+          gh release create "$TAG" dist/*.zip \
+            --target "$RELEASE_SHA" \
             --title "The Lost Centuries ${VERSION}" \
             --notes-file dist/notes.md
