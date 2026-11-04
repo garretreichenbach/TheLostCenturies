@@ -1,8 +1,8 @@
 name = "The Lost Centuries Core"
-filename = "lostcenturies-0.1.0.jar"
+filename = "lostcenturies-0.1.1.jar"
 side = "server"
 
 [download]
-url = "https://github.com/garretreichenbach/TheLostCenturies/releases/download/mod-v0.1.0/lostcenturies-0.1.0.jar"
+url = "https://github.com/garretreichenbach/TheLostCenturies/releases/download/mod-v0.1.1/lostcenturies-0.1.1.jar"
 hash-format = "sha256"
-hash = "9476d73b8c8177806fe407bd69c3fabce4bf3184ad9fcf6977246dc0dfe989fa"
+hash = "f96e9ed31b33d65ed0c34962cc9d0374ac29809c6d87046adb7159497f8876e9"

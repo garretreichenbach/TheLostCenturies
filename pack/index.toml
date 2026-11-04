@@ -226,7 +226,7 @@ metafile = true
 
 [[files]]
 file = "mods/lostcenturies.pw.toml"
-hash = "8ba5992ee6c6bc096aa71a914abf1417295fff49b3359e1808da9a0e68ec1178"
+hash = "8dc78cc75a71e46d6a5853643b9cfe1eedb5293e17b1a53993db30a4f094b788"
 metafile = true
 
 [[files]]
