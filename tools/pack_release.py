@@ -96,7 +96,8 @@ def instance_zip(path, version, pack, tag, repo, bootstrap):
         f"name=The Lost Centuries {version}",
         "iconKey=default",
         "OverrideCommands=true",
-        f'PreLaunchCommand="$INST_JAVA" -jar packwiz-installer-bootstrap.jar {url}',
+        # Qt INI: quote the whole value and escape the inner quotes, or Prism drops the space after the java path.
+        f'PreLaunchCommand="\\"$INST_JAVA\\" -jar packwiz-installer-bootstrap.jar {url}"',
         "OverrideMemory=true",
         "MinMemAlloc=2048",
         "MaxMemAlloc=8192",
