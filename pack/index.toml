@@ -198,6 +198,11 @@ hash = "0d3683a8c533e1fb67bf0b1668089a322fc5f594f9610d441657378ab4f64383"
 metafile = true
 
 [[files]]
+file = "mods/lostcenturies.pw.toml"
+hash = "8ba5992ee6c6bc096aa71a914abf1417295fff49b3359e1808da9a0e68ec1178"
+metafile = true
+
+[[files]]
 file = "mods/mezzconfig.pw.toml"
 hash = "1bf9a73f7f3879aeed5e6d482a5e864b036e5659cc0e2d0c1f8a8ac8d67507c0"
 metafile = true
