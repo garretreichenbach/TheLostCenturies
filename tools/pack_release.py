@@ -2,12 +2,13 @@
 """Build a pack release: a Prism Launcher instance zip + release notes.
 
 The zip contains no mod jars (several mods, e.g. FTB's, don't allow redistribution). It's a Prism instance
-that runs packwiz-installer-bootstrap before launch, pinned to this release's tag, so every mod is downloaded
-from its original source (Modrinth / CurseForge / GitHub).
+that runs packwiz-installer-bootstrap before launch against the pack on `main` (the same URL the server
+uses), so it stays in sync and every mod is downloaded from its original source (Modrinth / CurseForge /
+GitHub). Pass --pin to point the instance at this release's tag instead.
 
 Usage (from the repo root):
   python3 tools/pack_release.py --tag pack-v0.1.0 --repo garretreichenbach/TheLostCenturies \
-      --bootstrap packwiz-installer-bootstrap.jar [--prev-tag pack-v0.0.9] [--out dist]
+      --bootstrap packwiz-installer-bootstrap.jar [--prev-tag pack-v0.0.9] [--out dist] [--pin]
 """
 import argparse
 import json
@@ -50,7 +51,11 @@ def mods_at(ref):
     return out
 
 
-def notes(version, pack, tag, repo, prev_tag):
+def pack_url(repo, ref):
+    return f"https://raw.githubusercontent.com/{repo}/{ref}/pack/pack.toml"
+
+
+def notes(version, pack, tag, repo, prev_tag, ref):
     mc, neo = pack["versions"]["minecraft"], pack["versions"].get("neoforge", "?")
     lines = [
         f"## The Lost Centuries {version}",
@@ -60,9 +65,11 @@ def notes(version, pack, tag, repo, prev_tag):
         "### Install (Prism Launcher)",
         f"Download `TheLostCenturies-{version}-prism.zip` below and drag it into Prism (or *Add Instance → Import*).",
         "The first launch downloads all mods from their original sources, so it takes a while.",
+        ("The instance updates itself to the latest pack on every launch."
+         if ref == "main" else f"The instance is pinned to {tag}."),
         "",
         "Server / other launchers: point packwiz-installer at",
-        f"`https://raw.githubusercontent.com/{repo}/{tag}/pack/pack.toml`",
+        f"`{pack_url(repo, ref)}`" + ("" if ref != "main" else f" (latest), or `{pack_url(repo, tag)}` for exactly this release"),
         "",
     ]
     cur = mods_at(None)
@@ -87,13 +94,13 @@ def notes(version, pack, tag, repo, prev_tag):
     return "\n".join(lines) + "\n"
 
 
-def instance_zip(path, version, pack, tag, repo, bootstrap):
-    url = f"https://raw.githubusercontent.com/{repo}/{tag}/pack/pack.toml"
+def instance_zip(path, version, pack, ref, repo, bootstrap):
+    url = pack_url(repo, ref)
     instance_cfg = "\n".join([
         "[General]",
         "ConfigVersion=1.2",
         "InstanceType=OneSix",
-        f"name=The Lost Centuries {version}",
+        "name=The Lost Centuries" + ("" if ref == "main" else f" {version}"),
         "iconKey=default",
         "OverrideCommands=true",
         # Qt INI: quote the whole value and escape the inner quotes, or Prism drops the space after the java path.
@@ -124,6 +131,7 @@ def main():
     ap.add_argument("--bootstrap", required=True, help="path to packwiz-installer-bootstrap.jar")
     ap.add_argument("--prev-tag", default="")
     ap.add_argument("--out", default="dist")
+    ap.add_argument("--pin", action="store_true", help="pin the instance to this tag instead of tracking main")
     a = ap.parse_args()
 
     m = re.fullmatch(r"pack-v(\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?)", a.tag)
@@ -138,8 +146,9 @@ def main():
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
     zip_path = out / f"TheLostCenturies-{version}-prism.zip"
-    instance_zip(zip_path, version, pack, a.tag, a.repo, a.bootstrap)
-    (out / "notes.md").write_text(notes(version, pack, a.tag, a.repo, a.prev_tag or None))
+    ref = a.tag if a.pin else "main"
+    instance_zip(zip_path, version, pack, ref, a.repo, a.bootstrap)
+    (out / "notes.md").write_text(notes(version, pack, a.tag, a.repo, a.prev_tag or None, ref))
     print(f"Built {zip_path} ({zip_path.stat().st_size} bytes) and {out / 'notes.md'}")
 
 

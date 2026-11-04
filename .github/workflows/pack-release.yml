@@ -1,6 +1,6 @@
 # Pack release: bump `version` in pack/pack.toml, `packwiz refresh`, commit, then push a tag like `pack-v0.2.0`.
-# Publishes a GitHub release with a Prism Launcher instance zip (no mod jars; it installs the pack pinned to
-# this tag via packwiz-installer on first launch) and release notes listing mod changes since the last pack tag.
+# Publishes a GitHub release with a Prism Launcher instance zip (no mod jars; packwiz-installer installs the pack
+# from `main` before every launch, same as the server) and release notes listing mod changes since the last pack tag.
 name: Pack release
 
 on:

@@ -82,11 +82,13 @@ git tag pack-vX.Y.Z && git push origin pack-vX.Y.Z
 The workflow fails if the tag doesn't match `pack.toml`'s version or if `index.toml` is stale.
 
 The instance zip contains no mod jars, because some mods (e.g. FTB's) don't allow redistribution. It's a Prism
-instance whose pre-launch command runs packwiz-installer against `pack.toml` **at that tag**, so each
-release is reproducible and every mod is downloaded from its original source. (`packwiz mr export` would
-bundle the CurseForge-only jars into the `.mrpack`, so we don't publish that.)
+instance whose pre-launch command runs packwiz-installer against `pack.toml` **on `main`**, the same URL the
+server uses, so clients update themselves on every launch and stay in sync with the server. Every mod is
+downloaded from its original source. (`packwiz mr export` would bundle the CurseForge-only jars into the
+`.mrpack`, so we don't publish that.)
 
-To track `main` instead (dev/testing), change the pre-launch URL in the instance to `.../main/pack/pack.toml`.
+The release tag still marks an exact pack state: `.../pack-vX.Y.Z/pack/pack.toml`. To publish zips pinned to
+their tag instead, add `--pin` to the `pack_release.py` call in `pack-release.yml`.
 
 ### Exporting to platforms (later)
 
