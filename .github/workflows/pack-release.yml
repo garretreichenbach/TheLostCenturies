@@ -1,0 +1,68 @@
+# Pack release: bump `version` in pack/pack.toml, `packwiz refresh`, commit, then push a tag like `pack-v0.2.0`.
+# Publishes a GitHub release with a Prism Launcher instance zip (no mod jars; it installs the pack pinned to
+# this tag via packwiz-installer on first launch) and release notes listing mod changes since the last pack tag.
+name: Pack release
+
+on:
+  push:
+    tags: ['pack-v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout tag (with history and tags, for the changelog)
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Setup Go (for packwiz)
+        uses: actions/setup-go@v7
+        with:
+          go-version: stable
+          cache: false
+
+      - name: Install packwiz
+        run: go install github.com/packwiz/packwiz@latest
+
+      - name: Check the pack index is up to date
+        working-directory: pack
+        run: |
+          "$(go env GOPATH)/bin/packwiz" refresh
+          if ! git diff --quiet -- .; then
+            git --no-pager diff --stat -- .
+            echo "::error::pack/index.toml is stale. Run 'packwiz refresh' in pack/, commit, and re-tag."
+            exit 1
+          fi
+
+      - name: Find previous pack release
+        id: prev
+        run: |
+          PREV=$(git describe --tags --abbrev=0 --match 'pack-v*' "${GITHUB_REF_NAME}^" 2>/dev/null || true)
+          echo "tag=$PREV" >> "$GITHUB_OUTPUT"
+          echo "Previous pack tag: ${PREV:-none}"
+
+      - name: Build instance zip and notes
+        run: |
+          curl -sSfL -o packwiz-installer-bootstrap.jar \
+            https://github.com/packwiz/packwiz-installer-bootstrap/releases/latest/download/packwiz-installer-bootstrap.jar
+          python3 tools/pack_release.py \
+            --tag "$GITHUB_REF_NAME" \
+            --repo "$GITHUB_REPOSITORY" \
+            --bootstrap packwiz-installer-bootstrap.jar \
+            --prev-tag "${{ steps.prev.outputs.tag }}" \
+            --out dist
+
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION="${GITHUB_REF_NAME#pack-v}"
+          gh release create "$GITHUB_REF_NAME" dist/*.zip \
+            --verify-tag \
+            --title "The Lost Centuries ${VERSION}" \
+            --notes-file dist/notes.md
