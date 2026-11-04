@@ -35,6 +35,7 @@ docs/                     design notes
 | Shaders | Iris + Complementary Reimagined / Unbound (in `shaderpacks/`, off by default) | Modrinth |
 | Maps | Xaero's Minimap, Xaero's World Map | Modrinth |
 | QoL | Jade (+ Jade Addons), Mouse Tweaks, AppleSkin, Controlling, Clumps, Inventory Essentials | Modrinth |
+| Building | Effortless Building | Modrinth |
 
 ## Working on the pack
 
