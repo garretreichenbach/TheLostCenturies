@@ -1,0 +1,32 @@
+# Build check for the companion mod on pushes and PRs that touch mod/.
+name: Companion mod build
+
+on:
+  push:
+    branches: [main]
+    paths: ['mod/**', '.github/workflows/mod-build.yml']
+  pull_request:
+    paths: ['mod/**', '.github/workflows/mod-build.yml']
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-java@v6
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - uses: gradle/actions/setup-gradle@v6
+
+      - name: Build
+        working-directory: mod
+        run: ./gradlew build -PskipRecompile
+
+      - name: Upload jar
+        uses: actions/upload-artifact@v7
+        with:
+          name: lostcenturies-dev
+          path: mod/build/libs/*.jar

@@ -108,7 +108,22 @@ Settings (`gradle.properties`, or override in `~/.gradle/gradle.properties` / wi
 If the instance syncs the pack via packwiz-installer from `http://localhost:8080`, start `packwiz serve` in
 `../pack` first.
 
-## Getting it into the pack
+## Releasing
 
-For release, publish it (Modrinth/CurseForge or GitHub Releases) and add it with packwiz
-(`packwiz mr add` / `packwiz url add`), so the pack keeps pinning by hash.
+Tag-driven, via `.github/workflows/mod-release.yml`:
+
+```sh
+git tag mod-v0.1.1 && git push origin mod-v0.1.1
+```
+
+GitHub Actions then:
+1. builds the jar with version `0.1.1` (the tag overrides `mod_version` in `gradle.properties`),
+2. publishes a GitHub release with `lostcenturies-0.1.1.jar`,
+3. rewrites `pack/mods/lostcenturies.pw.toml` to that release (URL + sha256), runs `packwiz refresh` and pushes to `main`.
+
+The Pelican server picks it up on its next restart. Pull `main` afterwards, since the bot made a commit.
+
+The pack entry is `side = "server"`: clients don't need the mod (messages fall back to English), and your dev
+instance gets dev builds from `./gradlew installToPrism` without a duplicate release copy.
+
+`mod-build.yml` builds the mod on every push/PR that touches `mod/` and uploads the jar as an artifact.

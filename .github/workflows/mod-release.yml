@@ -1,0 +1,99 @@
+# Companion mod release: push a tag like `mod-v0.1.1`.
+#   1. builds mod/ with version 0.1.1
+#   2. publishes a GitHub release with lostcenturies-0.1.1.jar
+#   3. points pack/mods/lostcenturies.pw.toml at that jar, refreshes the packwiz index and pushes to main
+# The Pelican server picks it up on its next restart (packwiz sync on start).
+name: Companion mod release
+
+on:
+  push:
+    tags: ['mod-v*']
+
+permissions:
+  contents: write
+
+concurrency:
+  group: mod-release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout tag
+        uses: actions/checkout@v7
+
+      - name: Version from tag
+        id: version
+        run: |
+          VERSION="${GITHUB_REF_NAME#mod-v}"
+          if ! [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+([-+][0-9A-Za-z.-]+)?$ ]]; then
+            echo "::error::Tag '$GITHUB_REF_NAME' must look like mod-v1.2.3"; exit 1
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "jar=mod/build/libs/lostcenturies-$VERSION.jar" >> "$GITHUB_OUTPUT"
+
+      - name: Setup JDK 21
+        uses: actions/setup-java@v6
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      - name: Build
+        working-directory: mod
+        # skipRecompile: no Minecraft decompile needed to build the jar (faster, less RAM)
+        run: ./gradlew build -PskipRecompile -Pmod_version=${{ steps.version.outputs.version }}
+
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" "${{ steps.version.outputs.jar }}" \
+            --verify-tag \
+            --title "Companion mod ${{ steps.version.outputs.version }}" \
+            --generate-notes
+
+      - name: Setup Go (for packwiz)
+        uses: actions/setup-go@v7
+        with:
+          go-version: stable
+          cache: false
+
+      - name: Install packwiz
+        run: go install github.com/packwiz/packwiz@latest
+
+      - name: Point the pack at the release
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+          JAR: ${{ steps.version.outputs.jar }}
+        run: |
+          SHA=$(sha256sum "$JAR" | cut -d' ' -f1)
+          URL="https://github.com/${GITHUB_REPOSITORY}/releases/download/${GITHUB_REF_NAME}/lostcenturies-${VERSION}.jar"
+
+          # Update main (the tag may be behind it); the built jar is gitignored and stays put.
+          git fetch origin main
+          git checkout -B main origin/main
+
+          # side = "server": only the server needs it. Dev clients get dev builds via `./gradlew installToPrism`,
+          # and a client-side copy here would clash with them (duplicate mod).
+          cat > pack/mods/lostcenturies.pw.toml <<TOML
+          name = "The Lost Centuries Core"
+          filename = "lostcenturies-${VERSION}.jar"
+          side = "server"
+
+          [download]
+          url = "${URL}"
+          hash-format = "sha256"
+          hash = "${SHA}"
+          TOML
+
+          (cd pack && "$(go env GOPATH)/bin/packwiz" refresh)
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add pack
+          git commit -m "pack: companion mod ${VERSION}"
+          git push origin main
