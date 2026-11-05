@@ -100,6 +100,10 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add pack
-          git commit -m "pack: companion mod ${VERSION}"
+          if git diff --cached --quiet; then
+            echo "Pack already points at ${VERSION}; nothing to commit"
+          else
+            git commit -m "pack: companion mod ${VERSION}"
+          fi
           git pull --rebase origin "$GITHUB_REF_NAME"
           git push origin "HEAD:$GITHUB_REF_NAME"
